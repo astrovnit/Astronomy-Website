@@ -6,6 +6,7 @@ const session = require("express-session");
 const md5 = require("md5");
 const authenticate = require("./middlewares/auth");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 dotenv.config();
 let transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -28,7 +29,11 @@ app.use(
     resave: true,
   })
 );
-
+app.use(
+  cors({
+    origin: "https://gregarious-flan-0287cd.netlify.app",
+  })
+);
 app.use(authenticate);
 
 app.post("/register", (req, res) => {
