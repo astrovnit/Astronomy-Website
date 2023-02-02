@@ -31,7 +31,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: "https://gregarious-flan-0287cd.netlify.app",
+    origin: "*",
   })
 );
 app.use(authenticate);
