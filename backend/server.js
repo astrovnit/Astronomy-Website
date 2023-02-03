@@ -2,11 +2,11 @@ const { User, Blog } = require("./database/db");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
-const session = require("express-session");
 const md5 = require("md5");
-const authenticate = require("./middlewares/auth");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 let transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -21,54 +21,13 @@ let transport = nodemailer.createTransport({
   },
 });
 const PORT = process.env.PORT || 5000;
-
-app.use(
-  session({
-    secret: "key",
-    saveUninitialized: true,
-    resave: true,
-  })
-);
+const secret = process.env.JWT_KEY;
 app.use(
   cors({
     origin: "*",
   })
 );
-app.use(authenticate);
-
-app.post("/register", (req, res) => {
-  let name = req.query.name;
-  let username = req.query.username;
-  let password = md5(req.query.password);
-
-  let newUser = new User({
-    isAdmin: false,
-    name: name,
-    username: username,
-    password: password,
-  });
-  User.find(
-    {
-      username: username,
-    },
-    function (err, user) {
-      if (err) {
-        console.log(err);
-      } else {
-        if (user.length > 0) {
-          res.send({
-            message: 0,
-          });
-        } else {
-          newUser.save();
-          res.send({
-            message: 1,
-          });
-        }
-      }
-    }
-  );
-});
+app.use(cookieParser());
 
 app.post("/login", (req, res) => {
   let username = req.query.username;
@@ -86,12 +45,13 @@ app.post("/login", (req, res) => {
         });
       } else {
         if (user.length > 0) {
-          req.session.user = user[0]; // Setting session
-
+          let currentUser = user[0].toJSON();
+          const token = jwt.sign(currentUser, secret);
+          res.cookie("authToken", token, { maxAge: 86400000, httpOnly: true });
           res.send({
-            message: 1, // Login Successfull.
+            message: 1, // Login Success
             isLoggedin: true,
-            user: req.session.user,
+            user: currentUser,
           });
         } else {
           res.send({
@@ -104,26 +64,38 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  console.log("REQ ON /logout");
-  req.session.destroy();
+  res.clearCookie("authToken");
   res.send({
     message: 1,
+    isLoggedin: false,
+    user: { isAdmin: false },
   });
 });
 
 app.get("/getUserInfo", (req, res) => {
-  if (typeof req.session.user == "undefined") {
+  let token = req.cookies["authToken"];
+  if (token == undefined) {
     res.send({
       isLoggedin: false,
       user: { isAdmin: false },
     });
   } else {
-    res.send({
-      isLoggedin: true,
-      user: req.session.user,
-    });
+    try {
+      let decoded = jwt.verify(token, secret);
+      res.send({
+        isLoggedin: true,
+        user: decoded,
+      });
+    } catch {
+      res.send({
+        isLoggedin: false,
+        user: { isAdmin: false },
+        message: "INVALID TOKEN",
+      });
+    }
   }
 });
+
 app.post("/postexp", (req, res) => {
   data = req.query;
   let date = new Date();
@@ -310,6 +282,7 @@ app.get("/getData", (req, res) => {
     }
   );
 });
+
 app.listen(PORT, (req, res) => {
   console.log(`Server initialised on PORT ${PORT}`);
 });
