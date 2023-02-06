@@ -90,7 +90,7 @@ exports.login = (req, res) => {
           const token = jwt.sign(currentUser, secret);
           res.cookie("authToken", token, {
             maxAge: 5 * 60 * 60 * 1000,
-            httpOnly: false,
+            httpOnly: true,
           });
           res.send({
             message: 1, // Login Success
