@@ -7,7 +7,7 @@ const secret = process.env.JWT_KEY;
 
 function authenticateAdmin(req, res, next) {
   let token = req.query.token;
-  if (token == undefined) {
+  if (token == "undefined") {
     res.send({
       message: "UNAUTHORIZED REQUEST",
     });
