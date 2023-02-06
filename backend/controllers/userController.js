@@ -8,7 +8,7 @@ dotenv.config();
 let secret = process.env.JWT_KEY;
 
 exports.getUserInfo = (req, res) => {
-  let token = req.cookies["authToken"];
+  let token = req.query.token;
   if (token == undefined) {
     res.send({
       isLoggedin: false,
@@ -88,12 +88,6 @@ exports.login = (req, res) => {
         if (user.length > 0) {
           let currentUser = user[0].toJSON();
           const token = jwt.sign(currentUser, secret);
-          // res.cookie("authToken", token, {
-          //   maxAge: 5 * 60 * 60 * 1000,
-          //   httpOnly: true,
-          //   sameSite: false,
-          //   secure: true,
-          // });
           res.send({
             message: 1, // Login Success
             isLoggedin: true,
@@ -136,7 +130,6 @@ exports.resetPassword = (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  res.clearCookie("authToken");
   res.send({
     message: 1,
     isLoggedin: false,
