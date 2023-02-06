@@ -31,7 +31,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "https://astrovnit.netlify.app/",
+    origin: "https://astrovnit.netlify.app",
   })
 );
 app.use(cookieParser());
