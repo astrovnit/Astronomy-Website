@@ -88,16 +88,17 @@ exports.login = (req, res) => {
         if (user.length > 0) {
           let currentUser = user[0].toJSON();
           const token = jwt.sign(currentUser, secret);
-          res.cookie("authToken", token, {
-            maxAge: 5 * 60 * 60 * 1000,
-            httpOnly: true,
-            sameSite: false,
-            secure: true,
-          });
+          // res.cookie("authToken", token, {
+          //   maxAge: 5 * 60 * 60 * 1000,
+          //   httpOnly: true,
+          //   sameSite: false,
+          //   secure: true,
+          // });
           res.send({
             message: 1, // Login Success
             isLoggedin: true,
             user: currentUser,
+            token: token,
           });
         } else {
           res.send({
