@@ -7,7 +7,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 let secret = process.env.JWT_KEY;
 
-
 exports.getUserInfo = (req, res) => {
   let token = req.cookies["authToken"];
   if (token == undefined) {
@@ -91,7 +90,7 @@ exports.login = (req, res) => {
           const token = jwt.sign(currentUser, secret);
           res.cookie("authToken", token, {
             maxAge: 5 * 60 * 60 * 1000,
-            httpOnly: true,
+            httpOnly: false,
           });
           res.send({
             message: 1, // Login Success
@@ -142,14 +141,14 @@ exports.logout = (req, res) => {
   });
 };
 
-exports.myblogs=(req,res)=>{
-    let userid=req.query.userid;
-    Blog.find({userId:userid},function(err,blogs){
-        if(err){
-            console.log(err);
-            res.send({message:0});
-        }else{
-            res.send({data:blogs});
-        }
-    })
-}
+exports.myblogs = (req, res) => {
+  let userid = req.query.userid;
+  Blog.find({ userId: userid }, function (err, blogs) {
+    if (err) {
+      console.log(err);
+      res.send({ message: 0 });
+    } else {
+      res.send({ data: blogs });
+    }
+  });
+};
