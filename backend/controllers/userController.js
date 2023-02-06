@@ -91,6 +91,7 @@ exports.login = (req, res) => {
           res.cookie("authToken", token, {
             maxAge: 5 * 60 * 60 * 1000,
             httpOnly: true,
+            sameSite:none,
             secure: true,
           });
           res.send({
