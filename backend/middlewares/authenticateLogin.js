@@ -7,17 +7,11 @@ const secret = process.env.JWT_KEY;
 
 function authenticateLogin(req, res, next) {
   let token = req.query.token;
-  if (token == "undefined") {
-    res.send({
-      message: "ACCESS DENIED LOGIN FIRST",
-    });
-  } else {
-    try {
-      let decoded = jwt.verify(token, secret);
-      next();
-    } catch {
-      res.send({ message: "INVALID TOKEN" });
-    }
+  try {
+    let decoded = jwt.verify(token, secret);
+    next();
+  } catch {
+    res.send({ message: "LOGIN FIRST" });
   }
 }
 
