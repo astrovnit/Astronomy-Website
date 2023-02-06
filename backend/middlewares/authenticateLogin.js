@@ -6,7 +6,7 @@ dotenv.config();
 const secret = process.env.JWT_KEY;
 
 function authenticateLogin(req, res, next) {
-  let token = req.cookies["authToken"];
+  let token = req.query.token;
   if (token == undefined) {
     res.send({
       message: "ACCESS DENIED LOGIN FIRST",

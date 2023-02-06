@@ -129,13 +129,7 @@ exports.resetPassword = (req, res) => {
   );
 };
 
-exports.logout = (req, res) => {
-  res.send({
-    message: 1,
-    isLoggedin: false,
-    user: { isAdmin: false },
-  });
-};
+
 
 exports.myblogs = (req, res) => {
   let userid = req.query.userid;
