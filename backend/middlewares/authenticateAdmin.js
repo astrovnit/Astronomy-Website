@@ -7,17 +7,17 @@ const secret = process.env.JWT_KEY;
 
 function authenticateAdmin(req, res, next) {
   let token = req.query.token;
-
-  try {
-    let decoded = jwt.verify(token, secret);
-    if (decoded.isAdmin == true) {
-      next();
+  jwt.verify(token, secret, (err, data) => {
+    if (err) {
+      res.send({ message: "LOGIN FIRST" });
     } else {
-      res.send({ message: "REQUEST UNAUTHORIZED. ACCESS DENIED" });
+      if (data.isAdmin == true) {
+        next();
+      } else {
+        res.send({ message: "ACCESS DENIED. ADMIN ONLY" });
+      }
     }
-  } catch {
-    res.send({ message: "LOGIN FIRST" });
-  }
+  });
 }
 
 module.exports = { authenticateAdmin };

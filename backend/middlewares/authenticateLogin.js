@@ -7,12 +7,13 @@ const secret = process.env.JWT_KEY;
 
 function authenticateLogin(req, res, next) {
   let token = req.query.token;
-  try {
-    let decoded = jwt.verify(token, secret);
-    next();
-  } catch {
-    res.send({ message: "LOGIN FIRST" });
-  }
+  jwt.verify(token, secret, (err, data) => {
+    if (err) {
+      res.send({ message: "LOGIN FIRST" });
+    } else {
+      next();
+    }
+  });
 }
 
 module.exports = { authenticateLogin };

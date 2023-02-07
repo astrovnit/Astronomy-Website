@@ -9,26 +9,20 @@ let secret = process.env.JWT_KEY;
 
 exports.getUserInfo = (req, res) => {
   let token = req.query.token;
-  if (token == undefined) {
-    res.send({
-      isLoggedin: false,
-      user: { isAdmin: false },
-    });
-  } else {
-    try {
-      let decoded = jwt.verify(token, secret);
-      res.send({
-        isLoggedin: true,
-        user: decoded,
-      });
-    } catch {
+  jwt.verify(token, secret, (err, data) => {
+    if (err) {
       res.send({
         isLoggedin: false,
         user: { isAdmin: false },
         message: "INVALID TOKEN",
       });
+    } else {
+      res.send({
+        isLoggedin: true,
+        user: data,
+      });
     }
-  }
+  });
 };
 
 exports.register = (req, res) => {
@@ -86,8 +80,12 @@ exports.login = (req, res) => {
         });
       } else {
         if (user.length > 0) {
-          let currentUser = user[0].toJSON();
-          const token = jwt.sign(currentUser, secret);
+          let currentUser = {
+            isAdmin: user[0].isAdmin,
+            name: user[0].name,
+          };
+          currentUser = currentUser.toJSON();
+          const token = jwt.sign(currentUser, secret, { expiresIn: "5h" });
           res.send({
             message: 1, // Login Success
             isLoggedin: true,
@@ -128,8 +126,6 @@ exports.resetPassword = (req, res) => {
     }
   );
 };
-
-
 
 exports.myblogs = (req, res) => {
   let userid = req.query.userid;
