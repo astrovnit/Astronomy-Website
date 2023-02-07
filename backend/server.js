@@ -31,6 +31,8 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: "https://astrovnit.netlify.app",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    preflightContinue: true,
   })
 );
 app.use("/user", userRoutes);
