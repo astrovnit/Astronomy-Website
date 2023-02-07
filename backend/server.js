@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const nodemailer = require("nodemailer");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -29,14 +28,7 @@ let transport = nodemailer.createTransport({
 });
 const PORT = process.env.PORT || 5000;
 
-app.use(
-  cors({
-    origin: "https://astrovnit.netlify.app",
-    credentials: true,
-    methods: ["GET", "POST"],
-  })
-);
-app.use(cookieParser());
+app.use(cors({ origin: "*" }));
 app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
 app.use("/admin", adminRoutes);
