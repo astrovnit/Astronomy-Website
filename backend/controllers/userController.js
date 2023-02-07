@@ -84,7 +84,6 @@ exports.login = (req, res) => {
             isAdmin: user[0].isAdmin,
             name: user[0].name,
           };
-          currentUser = currentUser.toJSON();
           const token = jwt.sign(currentUser, secret, { expiresIn: "5h" });
           res.send({
             message: 1, // Login Success
