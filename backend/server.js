@@ -28,7 +28,11 @@ let transport = nodemailer.createTransport({
 });
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: "*" }));
+app.use(
+  cors({
+    origin: "https://astrovnit.netlify.app/",
+  })
+);
 app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
 app.use("/admin", adminRoutes);
