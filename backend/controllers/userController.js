@@ -83,6 +83,7 @@ exports.login = (req, res) => {
           let currentUser = {
             isAdmin: user[0].isAdmin,
             name: user[0].name,
+            _id: user[0]._id,
           };
           const token = jwt.sign(currentUser, secret, { expiresIn: "5h" });
           res.send({
