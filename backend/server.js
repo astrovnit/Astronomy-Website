@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "https://astrovnit.netlify.app",
+    origin: "http://astrovnit.in",
   })
 );
 app.use("/user", userRoutes);
