@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://astrovnit.in",
+    origin: "https://astrovnit.in",
   })
 );
 app.use("/user", userRoutes);
